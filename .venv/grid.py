@@ -67,13 +67,17 @@ class Grid:
                     self.click(x + xi, y + yi)
         return True
 
-    def action(self, mov):
+    def action(self, mov, first=False):
         splt = mov.split(" ")
         splt[1] = int(splt[1])
         splt[2] = int(splt[2])
         if splt[0] == "f":
             return self.flag(splt[2] - 1, splt[1] - 1)
         if splt[0] == "c":
+            if not self.losscheck(splt[2]- 1, splt[1] - 1) or not first:
+                print("Fuck you! *initiating self-destrucc*")
+                self.grid_data[splt[2] - 1][splt[1] - 1] = Mine()
+                return False
             return self.click(splt[2] - 1, splt[1] - 1)
         print("Invalid Input!")
         return True
@@ -90,6 +94,22 @@ class Grid:
         print(f"Mines remaining: {mine_counter}")
         print(f"Cells hidden: {hidden_counter}")
         return mine_counter == hidden_counter
+
+    def losscheck(self, x, y):
+        mine_counter = 0
+        flag_counter = 0
+        cell = self.grid_data[x][y]
+        for xi in range(-1, 2):
+            for yi in range(-1, 2):
+                if x + xi >= self.width or y + yi >= self.height:
+                    continue
+                if x + xi < 0 or y + yi < 0:
+                    continue
+                if isinstance(self.grid_data[x + xi][y + yi], Mine) and self.grid_data[x + xi][y + yi].flagged:
+                    mine_counter += 1
+                if self.grid_data[x + xi][y + yi].flagged:
+                    flag_counter += 1
+        return mine_counter == cell.value and cell.value == flag_counter
 
 
 

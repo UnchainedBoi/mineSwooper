@@ -3,7 +3,8 @@ from cell import *
 
 
 new_grid = Grid(10, 10, 10)
-while new_grid.action(input("Action:")):
+first = True
+while new_grid.action(input("Action:"), first=first):
     new_grid.pront()
     if new_grid.wincheck():
         print("You Win!")
